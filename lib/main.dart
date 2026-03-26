@@ -33,19 +33,59 @@ class QuizzPage extends StatefulWidget {
 
 class _QuizzPageState extends State<QuizzPage> {
 
-  // ✅ Questions list
+  // ✅ Questions
   List<String> questions = [
     'Sharks are mammals',
-    'Who was the first Prime Minister of India?',
-    'In which year did India gain independence?',
-    'Which is the longest river in India?',
+    'Jawaharlal Nehru was the first Prime Minister of India',
+    'India got independence in 1947',
+    'Ganga is the longest river in India',
   ];
 
-  // ✅ Question index
-  int questionIndex = 0;
+  // ✅ Correct answers
+  List<bool> answers = [
+    false,
+    true,
+    true,
+    true,
+  ];
 
-  // ✅ Score icons
+  int questionIndex = 0;
   List<Widget> scoreKeeper = [];
+
+  // 🔥 Function to check answer
+  void checkAnswer(bool userAnswer) {
+    bool correctAnswer = answers[questionIndex];
+
+    setState(() {
+      if (userAnswer == correctAnswer) {
+        // ✅ Correct
+        scoreKeeper.add(
+          const Icon(Icons.check, color: Colors.green),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('You are RIGHT ✅')),
+        );
+      } else {
+        // ❌ Wrong
+        scoreKeeper.add(
+          const Icon(Icons.close, color: Colors.red),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('You are WRONG ❌')),
+        );
+      }
+
+      // Move to next question
+      if (questionIndex < questions.length - 1) {
+        questionIndex++;
+      } else {
+        questionIndex = 0;
+        scoreKeeper.clear();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,25 +120,11 @@ class _QuizzPageState extends State<QuizzPage> {
                 backgroundColor: Colors.green,
               ),
               onPressed: () {
-                setState(() {
-                  scoreKeeper.add(
-                    const Icon(Icons.check, color: Colors.green),
-                  );
-
-                  if (questionIndex < questions.length - 1) {
-                    questionIndex++;
-                  } else {
-                    questionIndex = 0;
-                    scoreKeeper.clear();
-                  }
-                });
+                checkAnswer(true);
               },
               child: const Text(
                 'True',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20.0,
-                ),
+                style: TextStyle(color: Colors.black, fontSize: 20.0),
               ),
             ),
           ),
@@ -113,25 +139,11 @@ class _QuizzPageState extends State<QuizzPage> {
                 backgroundColor: Colors.red,
               ),
               onPressed: () {
-                setState(() {
-                  scoreKeeper.add(
-                    const Icon(Icons.close, color: Colors.red),
-                  );
-
-                  if (questionIndex < questions.length - 1) {
-                    questionIndex++;
-                  } else {
-                    questionIndex = 0;
-                    scoreKeeper.clear();
-                  }
-                });
+                checkAnswer(false);
               },
               child: const Text(
                 'False',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
               ),
             ),
           ),
